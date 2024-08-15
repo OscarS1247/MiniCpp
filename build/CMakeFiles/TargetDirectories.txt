@@ -1,0 +1,3 @@
+/home/oscar/Compiladores3/MiniC++/build/CMakeFiles/MiniC++.dir
+/home/oscar/Compiladores3/MiniC++/build/CMakeFiles/edit_cache.dir
+/home/oscar/Compiladores3/MiniC++/build/CMakeFiles/rebuild_cache.dir

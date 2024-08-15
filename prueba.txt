@@ -1,0 +1,49 @@
+int HolaMundo(){
+    std::cout << "Hola Mundo!" << std::endl;
+}   
+
+int Variables() {
+    int a;
+    a = 5;
+}
+
+int Comparar(int x, int y) {
+    if (x > y) {
+        std::cout << std::endl;
+    } else {
+        std::cout << std::endl;
+    }
+}
+
+int Contador() {
+    int i;
+    i = 0;
+    while (i < 10) {
+        i = i + 1;
+    }
+}
+
+int EntradaSalida() {
+    int num;
+    std::cin >> num { 1 + 1 };
+    std::cout << "El número es: " << num << std::endl;
+}
+
+int Verificar(int a, int b) {
+    if (a == b && a > 0) {
+        x = 1;
+    } else {
+        y = 2;
+    }
+}
+
+/*int SumaArray() {
+    int arr[5] = {1, 2, 3, 4, 5};
+    int suma = 0;
+    for (int i = 0; i < 5; i++) {
+        suma = suma + arr[i];
+    }
+    return suma;
+}*/
+
+
