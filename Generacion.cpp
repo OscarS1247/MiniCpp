@@ -87,10 +87,13 @@ ECode CodeGenerator::genCode(const AstNode *node)
 {
     ECode result;
 
+    std::cout << "Generando código para nodo tipo: " << node->kind() << std::endl;
+
     switch (node->kind())
     {
     case 1: // Program
     {
+        std::cout << "Nodo Program\n";
         const auto &program = dynamic_cast<const Program *>(node);
         for (const auto &func : program->functions)
         {
@@ -100,6 +103,7 @@ ECode CodeGenerator::genCode(const AstNode *node)
     }
     case 2: // FunctionDecl
     {
+        std::cout << "Nodo FunctionDecl\n";
         auto func = dynamic_cast<const FunctionDecl *>(node);
 
         currentFunctionName = func->name; // Actualizamos el nombre de la función actual
@@ -114,13 +118,14 @@ ECode CodeGenerator::genCode(const AstNode *node)
             result.code += stmtCode.code; // Generar el código de las sentencias
         }
 
-        result.code += "jr $ra\n"; // Regresar a la instrucción que llamó la función
+        // result.code += "jr $ra\n"; // Regresar a la instrucción que llamó la función
 
         break;
     }
 
     case 6: // IfStmt
     {
+        std::cout << "Nodo IfStmt\n";
         auto ifStmt = dynamic_cast<const IfStmt *>(node);
 
         // Generar etiquetas únicas para el bloque 'else' y el final del 'if'
@@ -160,6 +165,7 @@ ECode CodeGenerator::genCode(const AstNode *node)
     }
     case 7: // WhileStmt
     {
+        std::cout << "Nodo WhileStmt\n";
         auto whileStmt = dynamic_cast<const WhileStmt *>(node);
 
         // Generar etiquetas únicas para el inicio y el final del ciclo
@@ -197,6 +203,7 @@ ECode CodeGenerator::genCode(const AstNode *node)
 
     case 8: // AssignStmt
     {
+        std::cout << "Nodo AssignStmt\n";
         auto assignStmt = dynamic_cast<const AssignStmt *>(node);
         ECode exprCode = genCode(assignStmt->assignExpr.get());
 
@@ -215,6 +222,7 @@ ECode CodeGenerator::genCode(const AstNode *node)
 
     case 10: // LiteralExpr
     {
+        std::cout << "Nodo LiteralExpr\n";
         const auto &literal = dynamic_cast<const LiteralExpr *>(node);
         result.place = newTemp(); // Asignamos un registro temporal
 
@@ -246,6 +254,7 @@ ECode CodeGenerator::genCode(const AstNode *node)
 
     case 9: // BinaryExpr
     {
+        std::cout << "Nodo BinaryExpr\n";
         auto binExpr = dynamic_cast<const BinaryExpr *>(node);
         ECode leftCode = genCode(binExpr->left.get());
         ECode rightCode = genCode(binExpr->right.get());
@@ -365,18 +374,22 @@ ECode CodeGenerator::genCode(const AstNode *node)
     {
         auto callStmt = dynamic_cast<const CallStmt *>(node);
 
+        std::cout << "Generando CallStmt para: " << callStmt->identifier << "\n";
+
         // Diferenciar entre cin, cout y llamadas a funciones
         if (callStmt->identifier == "cout")
         {
-            // Código para std::cout
+            std::cout << "Generando código para std::cout\n";
             for (const auto &arg : callStmt->callArgs)
             {
+                std::cout << "Generando código para argumento de cout: tipo " << arg->kind() << "\n";
                 ECode argCode = genCode(arg.get());
 
                 // Comprobamos si es una cadena, número o identificador para generar el código correcto
                 if (arg->kind() == 10) // LiteralExpr
                 {
                     auto literalExpr = dynamic_cast<const LiteralExpr *>(arg.get());
+                    std::cout << "LiteralExpr: " << literalExpr->value << "\n";
 
                     if (literalExpr->value == "endl") // Detectamos `endl` para salto de línea
                     {
@@ -384,87 +397,76 @@ ECode CodeGenerator::genCode(const AstNode *node)
                     }
                     else if (literalExpr->type == LiteralExpr::STRING)
                     {
-                        // Usamos directamente la etiqueta generada para la cadena
-                        std::string stringLabel = genCodeForString(literalExpr->value);     // Obtener la etiqueta de la cadena
-                        result.code += "li $v0, 4\nla $a0, " + stringLabel + "\nsyscall\n"; // Usar la etiqueta directamente para imprimir la cadena
+                        std::string stringLabel = genCodeForString(literalExpr->value);     // Obtener la etiqueta para la cadena
+                        result.code += "li $v0, 4\nla $a0, " + stringLabel + "\nsyscall\n"; // Imprimir la cadena
                     }
                     else if (literalExpr->type == LiteralExpr::NUMBER)
                     {
                         result.code += argCode.code;
                         result.code += "li $v0, 1\nmove $a0, " + argCode.place + "\nsyscall\n"; // Imprimir número
-                        releaseTemp(argCode.place);                                             // Liberamos el temporal usado para el número
                     }
                     else if (literalExpr->type == LiteralExpr::IDENTIFIER)
                     {
-                        // Usar el nombre de la función como prefijo para el identificador (variable)
                         std::string prefixedVarName = currentFunctionName + "_" + literalExpr->value;
-
-                        std::string addrTemp = newTemp();                                       // Asignamos un temporal para la dirección
-                        result.code += "la " + addrTemp + ", " + prefixedVarName + "\n";        // Cargamos la dirección de la variable
-                        result.code += "lw " + argCode.place + ", 0(" + addrTemp + ")\n";       // Cargamos el valor de la variable
-                        result.code += "li $v0, 1\nmove $a0, " + argCode.place + "\nsyscall\n"; // Imprimir la variable
-                        releaseTemp(argCode.place);                                             // Liberamos el temporal
-                        releaseTemp(addrTemp);                                                  // Liberamos el temporal usado para la dirección
+                        std::string addrTemp = newTemp();
+                        result.code += "la " + addrTemp + ", " + prefixedVarName + "\n";
+                        result.code += "lw " + argCode.place + ", 0(" + addrTemp + ")\n";
+                        result.code += "li $v0, 1\nmove $a0, " + argCode.place + "\nsyscall\n";
+                        releaseTemp(addrTemp);
                     }
                 }
+                else
+                {
+                    std::cerr << "Error: Nodo no esperado en los argumentos de cout: tipo " << arg->kind() << "\n";
+                    throw std::runtime_error("Unhandled node type in CallStmt argument generation");
+                }
+
+                releaseTemp(argCode.place);
             }
         }
         else if (callStmt->identifier == "cin")
         {
-            // Código para std::cin
+            std::cout << "Generando código para std::cin\n";
             for (const auto &arg : callStmt->callArgs)
             {
+                std::cout << "Generando código para argumento de cin: tipo " << arg->kind() << "\n";
                 ECode argCode = genCode(arg.get());
 
-                // Solo manejamos identificadores para cin (no es posible leer directamente a un número o cadena)
                 if (arg->kind() == 10) // LiteralExpr
                 {
                     auto literalExpr = dynamic_cast<const LiteralExpr *>(arg.get());
-
                     if (literalExpr->type == LiteralExpr::IDENTIFIER)
                     {
-                        // Usar el nombre de la función como prefijo para el identificador (variable)
                         std::string prefixedVarName = currentFunctionName + "_" + literalExpr->value;
-
-                        std::string addrTemp = newTemp(); // Asignamos un temporal para la dirección
-
-                        // Generar código para leer un entero desde std::cin
-                        result.code += "li $v0, 5\n";                                    // Preparamos la syscall para leer un entero
-                        result.code += "syscall\n";                                      // Ejecutamos la syscall para leer el valor en $v0
-                        result.code += "la " + addrTemp + ", " + prefixedVarName + "\n"; // Cargamos la dirección de la variable
-                        result.code += "sw $v0, 0(" + addrTemp + ")\n";                  // Guardamos el valor leído en la variable
-
-                        releaseTemp(addrTemp); // Liberamos el temporal usado para la dirección
+                        std::string addrTemp = newTemp();
+                        result.code += "li $v0, 5\n"; // Leer un entero
+                        result.code += "syscall\n";
+                        result.code += "la " + addrTemp + ", " + prefixedVarName + "\n";
+                        result.code += "sw $v0, 0(" + addrTemp + ")\n";
+                        releaseTemp(addrTemp);
                     }
                     else
                     {
+                        std::cerr << "Error: cin solo puede asignar a variables (identificadores)\n";
                         throw std::runtime_error("cin can only assign to variables (identifiers)");
                     }
                 }
+                else
+                {
+                    std::cerr << "Error: Nodo no esperado en los argumentos de cin: tipo " << arg->kind() << "\n";
+                    throw std::runtime_error("Unhandled node type in CallStmt argument generation");
+                }
+
+                releaseTemp(argCode.place);
             }
         }
         else
         {
-            // Generar código para pasar los argumentos (asumimos que usamos los registros $a0 - $a3)
-            for (size_t i = 0; i < callStmt->callArgs.size() && i < 4; ++i)
-            {
-                ECode argCode = genCode(callStmt->callArgs[i].get());
-                result.code += argCode.code;
-
-                // Si es por referencia, pasamos la dirección
-                result.code += "la $a" + std::to_string(i) + ", " + argCode.place + "\n";
-
-                // Liberar el temporal utilizado para el argumento
-                releaseTemp(argCode.place);
-            }
-
-            // Llamar a la función
-            result.code += "jal " + callStmt->identifier + "\n"; // Saltar a la función
-
-            // No es necesario mover el valor de retorno a $v0, ya que los parámetros por referencia ya están modificados.
-
-            break;
+            std::cerr << "Generando código para llamada a función: " << callStmt->identifier << "\n";
+            // Aquí podrías tener el código para otras llamadas a funciones.
         }
+
+        break;
     }
     default:
         throw std::runtime_error("Unknown node type in code generation");
