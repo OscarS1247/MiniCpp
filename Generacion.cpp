@@ -56,6 +56,11 @@ std::string CodeGenerator::collectDataDeclarations(const AstNode *node, const st
                 data << functionName << "_" << var.first << ": .word 0\n"; // Initialize all variables to 0
             }
         }
+        // Declarar parámetros como variables en la sección .data
+        for (const auto &param : func->parameters)
+        {
+            data << functionName << "_" << param.first << ": .word 0\n"; // Espacio para cada parámetro
+        }
     }
     return data.str();
 }
@@ -98,6 +103,9 @@ ECode CodeGenerator::genCode(const AstNode *node)
         auto func = dynamic_cast<const FunctionDecl *>(node);
 
         currentFunctionName = func->name; // Actualizamos el nombre de la función actual
+
+        // Generar etiqueta para la función
+        result.code += func->name + ":\n";
 
         // Código para el cuerpo de la función
         for (const auto &stmt : func->statements)
@@ -236,8 +244,8 @@ ECode CodeGenerator::genCode(const AstNode *node)
         break;
     }
 
-    case 9:
-    { // BinaryExpr
+    case 9: // BinaryExpr
+    {
         auto binExpr = dynamic_cast<const BinaryExpr *>(node);
         ECode leftCode = genCode(binExpr->left.get());
         ECode rightCode = genCode(binExpr->right.get());
@@ -436,32 +444,28 @@ ECode CodeGenerator::genCode(const AstNode *node)
             }
         }
         else
-   {
-    // Código para llamadas a funciones regulares, sin uso de la pila
-    for (size_t i = 0; i < callStmt->callArgs.size() && i < 4; ++i)
-    {
-        ECode argCode = genCode(callStmt->callArgs[i].get());
-        result.code += argCode.code;
-        result.code += "move $a" + std::to_string(i) + ", " + argCode.place + "\n"; // Pasar el argumento al registro $a0, $a1, etc.
-        releaseTemp(argCode.place); // Liberar el temporal usado por el argumento
-    }
+        {
+            // Generar código para pasar los argumentos (asumimos que usamos los registros $a0 - $a3)
+            for (size_t i = 0; i < callStmt->callArgs.size() && i < 4; ++i)
+            {
+                ECode argCode = genCode(callStmt->callArgs[i].get());
+                result.code += argCode.code;
 
-    // Llamar a la función
-    result.code += "jal " + callStmt->identifier + "\n"; // Saltar a la función
+                // Si es por referencia, pasamos la dirección
+                result.code += "la $a" + std::to_string(i) + ", " + argCode.place + "\n";
 
-    // Usar el valor de retorno (si es necesario)
-    if (!callStmt->isVoid) // Si la función tiene valor de retorno
-    {
-        if (result.place.empty()) {
-            result.place = newTemp(); // Asignar un temporal si no lo tiene
+                // Liberar el temporal utilizado para el argumento
+                releaseTemp(argCode.place);
+            }
+
+            // Llamar a la función
+            result.code += "jal " + callStmt->identifier + "\n"; // Saltar a la función
+
+            // No es necesario mover el valor de retorno a $v0, ya que los parámetros por referencia ya están modificados.
+
+            break;
         }
-        result.code += "move " + result.place + ", $v0\n"; // El valor de retorno está en $v0
-        releaseTemp(result.place); // Liberar el temporal usado para el valor de retorno
     }
-}
-
-    break;
-}
     default:
         throw std::runtime_error("Unknown node type in code generation");
     }

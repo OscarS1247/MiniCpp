@@ -2,9 +2,14 @@
 fibonacci_a: .word 0
 fibonacci_b: .word 0
 fibonacci_c: .word 0
+fibonacci_n: .word 0
+fibonacci_result: .word 0
 main_num: .word 0
 main_result: .word 0
 .text
+fibonacci:
+addi $sp, $sp, -4
+sw $ra, 0($sp)
 li $t0, 0
 la $t1, fibonacci_a
 sw $t0, 0($t1)
@@ -47,7 +52,12 @@ la $t1, fibonacci_b
 lw $t0, 0($t1)
 la $t1, fibonacci_result
 sw $t0, 0($t1)
+lw $ra, 0($sp)
+addi $sp, $sp, 4
 jr $ra
+main:
+addi $sp, $sp, -4
+sw $ra, 0($sp)
 li $t0, 10
 la $t1, main_num
 sw $t0, 0($t1)
@@ -60,7 +70,11 @@ move $a0, $t0
 la $t1, main_result
 lw $t0, 0($t1)
 move $a1, $t0
+addi $sp, $sp, -4
+sw $ra, 0($sp)
 jal fibonacci
+lw $ra, 0($sp)
+addi $sp, $sp, 4
 move $t0, $v0
 la $t1, main_result
 lw $t0, 0($t1)
@@ -70,4 +84,6 @@ syscall
 li $v0, 11
 li $a0, 10
 syscall
+lw $ra, 0($sp)
+addi $sp, $sp, 4
 jr $ra
