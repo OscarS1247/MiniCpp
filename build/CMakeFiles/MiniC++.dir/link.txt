@@ -1,1 +1,1 @@
-/usr/bin/c++ CMakeFiles/MiniC++.dir/LexerImpl.cpp.o CMakeFiles/MiniC++.dir/main.cpp.o CMakeFiles/MiniC++.dir/Parser.cpp.o -o MiniC++ 
+/usr/bin/c++ CMakeFiles/MiniC++.dir/LexerImpl.cpp.o CMakeFiles/MiniC++.dir/main.cpp.o CMakeFiles/MiniC++.dir/Parser.cpp.o CMakeFiles/MiniC++.dir/Ast.cpp.o CMakeFiles/MiniC++.dir/Generacion.cpp.o -o MiniC++ 

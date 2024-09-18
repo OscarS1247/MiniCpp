@@ -8,6 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/home/oscar/Compiladores3/MiniC++/Ast.cpp" "CMakeFiles/MiniC++.dir/Ast.cpp.o" "gcc" "CMakeFiles/MiniC++.dir/Ast.cpp.o.d"
+  "/home/oscar/Compiladores3/MiniC++/Generacion.cpp" "CMakeFiles/MiniC++.dir/Generacion.cpp.o" "gcc" "CMakeFiles/MiniC++.dir/Generacion.cpp.o.d"
   "/home/oscar/Compiladores3/MiniC++/build/LexerImpl.cpp" "CMakeFiles/MiniC++.dir/LexerImpl.cpp.o" "gcc" "CMakeFiles/MiniC++.dir/LexerImpl.cpp.o.d"
   "/home/oscar/Compiladores3/MiniC++/Parser.cpp" "CMakeFiles/MiniC++.dir/Parser.cpp.o" "gcc" "CMakeFiles/MiniC++.dir/Parser.cpp.o.d"
   "/home/oscar/Compiladores3/MiniC++/main.cpp" "CMakeFiles/MiniC++.dir/main.cpp.o" "gcc" "CMakeFiles/MiniC++.dir/main.cpp.o.d"

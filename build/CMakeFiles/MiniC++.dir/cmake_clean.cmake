@@ -1,4 +1,8 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/MiniC++.dir/Ast.cpp.o"
+  "CMakeFiles/MiniC++.dir/Ast.cpp.o.d"
+  "CMakeFiles/MiniC++.dir/Generacion.cpp.o"
+  "CMakeFiles/MiniC++.dir/Generacion.cpp.o.d"
   "CMakeFiles/MiniC++.dir/LexerImpl.cpp.o"
   "CMakeFiles/MiniC++.dir/LexerImpl.cpp.o.d"
   "CMakeFiles/MiniC++.dir/Parser.cpp.o"

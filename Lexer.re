@@ -52,7 +52,8 @@ Token Lexer::nextToken()
             re2c:define:YYFILL:naked = 1;
 
             end = "\x00";
-            wsp = [ \t\n]+;
+            wsp = [ \t]+;
+            newline = '\n';
             num = [0-9]+; 
             id = [a-zA-Z_][a-zA-Z0-9_]*;
             str_lit = "\"" [^\"]* "\"";
@@ -63,8 +64,16 @@ Token Lexer::nextToken()
             end { return (YYMAXFILL == db.lim - db.tok)? Token::Eof : Token::Error;}
             
             wsp {continue;}
-            line_comment { continue; }
-            block_comment { continue; }
+            newline {++line; continue;}
+            line_comment { ++line; continue; }
+            block_comment { 
+                for (char *p = db.tok; p < db.cur; ++p) {
+                    if (*p == '\n') {
+                        line++;
+                    }
+                }
+                continue; 
+            }
 
             'int' { text = db.tokenText(); return Token::KW_INT; }
             'if' { text = db.tokenText(); return Token::KW_IF; }

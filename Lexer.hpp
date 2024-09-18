@@ -61,11 +61,13 @@ class Lexer
 public:
     static const size_t SIZE = 512;
 
-    Lexer(std::ifstream &in) : db(in) {}
+    Lexer(std::ifstream &in) : db(in), line(1) {}
 
     Token nextToken();
 
     std::string tokenText() const { return text; }
+
+    int getLine() const { return line; }
 
 private:
     struct DataBuffer
@@ -90,4 +92,5 @@ private:
 private:
     DataBuffer db;
     std::string text;
+    int line;
 };

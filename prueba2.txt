@@ -1,0 +1,51 @@
+/*int add(int a, int b, int &result)
+{
+    result = a + b;
+}
+
+int main()
+{
+    int x;
+    int y;
+    int z;
+    x=10;
+    y=20;
+    add(x, y, z);
+    std::cout << "Hola mundo" << std::endl;
+    std::cout << z << std::endl;
+}*/
+
+int fibonacci(int n, int &result) 
+{
+    int a;
+    int b;
+    int c;
+
+    a=0;
+    b=1;
+    c=0;
+    
+    while (n > 1) 
+    {
+        c = a + b;
+        a = b;
+        b = c;
+        n = n - 1;
+    }
+
+   result = b;
+}
+
+int main() 
+{
+    int num;  
+    int result; 
+    num=10;
+    result=0;
+   
+    
+    fibonacci(num,result);
+    
+    std::cout << result << std::endl; 
+    
+}

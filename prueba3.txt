@@ -1,0 +1,33 @@
+/*int main(){
+    int a , b;
+    std::cin >> a;
+    std::cin >> b;
+
+   if (a < b){
+        std::cout << "Hola" << std::endl;
+    } else {
+        std::cout << "Adios" << std::endl;
+    }
+
+    while (b > a){
+        std::cout << "Hola" << std::endl;
+        a = a + 1;
+    }
+}*/
+
+int main(){
+    int a;
+    int b;
+    a = 4;
+    b = 5;
+    if (a >= b || b <= a){  
+        std::cout << "Hola" << std::endl;
+    } else {
+        std::cout << "Adios" << std::endl;
+    }
+    while (b > a){
+        a = a + 1;
+        std::cout << a << std::endl;
+    }  
+    std::cout << "Fin" << std::endl;
+}

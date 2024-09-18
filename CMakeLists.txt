@@ -17,4 +17,4 @@ add_custom_command(
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${PROJECT_SOURCE_DIR})
 
-add_executable(${PROJECT_NAME} Lexer.hpp LexerImpl.cpp main.cpp Parser.hpp Parser.cpp)  
+add_executable(${PROJECT_NAME} Lexer.hpp LexerImpl.cpp main.cpp Parser.hpp Parser.cpp Ast.hpp Ast.cpp Generacion.cpp Generacion.hpp) 

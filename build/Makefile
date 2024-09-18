@@ -129,6 +129,54 @@ MiniC++/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MiniC++.dir/build.make CMakeFiles/MiniC++.dir/build
 .PHONY : MiniC++/fast
 
+Ast.o: Ast.cpp.o
+.PHONY : Ast.o
+
+# target to build an object file
+Ast.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MiniC++.dir/build.make CMakeFiles/MiniC++.dir/Ast.cpp.o
+.PHONY : Ast.cpp.o
+
+Ast.i: Ast.cpp.i
+.PHONY : Ast.i
+
+# target to preprocess a source file
+Ast.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MiniC++.dir/build.make CMakeFiles/MiniC++.dir/Ast.cpp.i
+.PHONY : Ast.cpp.i
+
+Ast.s: Ast.cpp.s
+.PHONY : Ast.s
+
+# target to generate assembly for a file
+Ast.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MiniC++.dir/build.make CMakeFiles/MiniC++.dir/Ast.cpp.s
+.PHONY : Ast.cpp.s
+
+Generacion.o: Generacion.cpp.o
+.PHONY : Generacion.o
+
+# target to build an object file
+Generacion.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MiniC++.dir/build.make CMakeFiles/MiniC++.dir/Generacion.cpp.o
+.PHONY : Generacion.cpp.o
+
+Generacion.i: Generacion.cpp.i
+.PHONY : Generacion.i
+
+# target to preprocess a source file
+Generacion.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MiniC++.dir/build.make CMakeFiles/MiniC++.dir/Generacion.cpp.i
+.PHONY : Generacion.cpp.i
+
+Generacion.s: Generacion.cpp.s
+.PHONY : Generacion.s
+
+# target to generate assembly for a file
+Generacion.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MiniC++.dir/build.make CMakeFiles/MiniC++.dir/Generacion.cpp.s
+.PHONY : Generacion.cpp.s
+
 LexerImpl.o: LexerImpl.cpp.o
 .PHONY : LexerImpl.o
 
@@ -210,6 +258,12 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... MiniC++"
+	@echo "... Ast.o"
+	@echo "... Ast.i"
+	@echo "... Ast.s"
+	@echo "... Generacion.o"
+	@echo "... Generacion.i"
+	@echo "... Generacion.s"
 	@echo "... LexerImpl.o"
 	@echo "... LexerImpl.i"
 	@echo "... LexerImpl.s"

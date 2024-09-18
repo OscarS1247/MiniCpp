@@ -1,6 +1,11 @@
 #pragma once
 
 #include "Lexer.hpp"
+#include <memory>
+#include "Ast.hpp"
+#include <iostream>
+#include <cstdlib>
+#include <vector>
 
 class Parser {
 public:
@@ -10,28 +15,30 @@ public:
 
     bool parse(double& result);
 
+    std::shared_ptr<Program> prg();            // Devuelve el nodo Program
 private:
     Lexer& lexer;
     Token currentToken;
     std::string currentText;
+    int currentLine;
 
     void advance();
     bool match(Token token);
+    void error(const std::string& expected);
 
-     // Declaraciones de las funciones correspondientes a las producciones
-    bool prg();         // input -> prg
-    bool func();        // func -> type IDENT OPEN_PAR param_list CLOSE_PAR OPEN_CURLY (var_decl SEMICOLON)* (stmt SEMICOLON)* CLOSE_CURLY
-    bool type();        // type -> KW_INT | KW_INT OPEN_BRACKET NUMBER CLOSE_BRACKET
-    bool param_list();  // param_list -> param (COMMA param)* | %empty
-    bool param();       // param -> TYPE IDENT | TYPE AMPERSAND IDENT
-    bool var_decl();    // var_decl -> type IDENT (COMMA IDENT)*
-    bool stmt();        // stmt -> varias opciones (asignación, if, while, cout, cin)
-    bool cout_arg();    // cout_arg -> expr | STRING_LITERAL | KW_ENDL
-    bool expr();        // expr -> bool_term (BOOL_OR bool_term)*
-    bool bool_term();   // bool_term -> rel_expr (BOOL_AND rel_expr)*
-    bool rel_expr();    // rel_expr -> arith_expr op arith_expr | arith_expr
-    bool arith_expr();  // arith_expr -> arith_term ((OP_ADD | OP_SUB) arith_term)*
-    bool arith_term();  // arith_term -> arith_factor ((OP_MULT | OP_DIV | OP_MOD) arith_factor)*
-    bool arith_factor();// arith_factor -> NUMBER | IDENT opcional con expr o expr_list | OPEN_PAR expr CLOSE_PAR
-    bool expr_list();   // expr_list -> expr (COMMA expr)* | %empty
+
+    std::shared_ptr<FunctionDecl> func();      // Devuelve el nodo FunctionDecl
+    bool param_list(std::shared_ptr<FunctionDecl> funcNode);  // Modificamos para recibir el nodo de función
+    bool param(std::shared_ptr<FunctionDecl> funcNode);       // Modificamos para recibir el nodo de función
+    std::shared_ptr<VarDecl> var_decl();       // Devuelve el nodo VarDecl
+    bool ident_decl();                         // Esta función aún puede devolver bool si solo hace matching
+    std::shared_ptr<Statement> stmt();         // Devuelve el nodo Statement
+    std::shared_ptr<Expression> cout_arg();    // Devuelve el nodo Expression (para los argumentos de cout)
+    std::shared_ptr<Expression> expr();        // Devuelve el nodo Expression
+    std::shared_ptr<Expression> bool_term();   
+    std::shared_ptr<Expression> rel_expr();    
+    std::shared_ptr<Expression> arith_expr();  
+    std::shared_ptr<Expression> arith_term();  
+    std::shared_ptr<Expression> arith_factor();
+    std::vector<std::shared_ptr<Expression>> expr_list();                           
 };
